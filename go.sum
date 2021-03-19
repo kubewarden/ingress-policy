@@ -1,0 +1,6 @@
+github.com/buger/jsonparser v1.1.1 h1:2PnMjfWD7wBILjqQbt530v576A/cAbQvEW9gGIpYMUs=
+github.com/buger/jsonparser v1.1.1/go.mod h1:6RYKKt7H4d4+iWqouImQ9R2FZql3VbhNgx27UK13J/0=
+github.com/chimera-kube/policy-sdk-go v0.0.0-20210322121239-288e6abc40aa h1:wUdn+vM4SAXsZ2aK2z3YeAhMgDly7bxZoKEsd2FDmqU=
+github.com/chimera-kube/policy-sdk-go v0.0.0-20210322121239-288e6abc40aa/go.mod h1:WF6S+Ls3C2Dss1UZyJi8WoY5cRKnIT24UkkfaoVZ05k=
+github.com/wapc/wapc-guest-tinygo v0.3.0 h1:nBbzqjntOSA4jXamwhfCDQhlOtfneGNPxRG0dI5MZVE=
+github.com/wapc/wapc-guest-tinygo v0.3.0/go.mod h1:Jssn+ovE+Y2oueUgVeLyGZf2ipUPngVnWTNPM8zmhn0=

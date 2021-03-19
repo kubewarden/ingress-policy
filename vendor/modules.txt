@@ -1,0 +1,9 @@
+# github.com/buger/jsonparser v1.1.1
+## explicit
+github.com/buger/jsonparser
+# github.com/chimera-kube/policy-sdk-go v0.0.0-20210322121239-288e6abc40aa
+## explicit
+github.com/chimera-kube/policy-sdk-go
+# github.com/wapc/wapc-guest-tinygo v0.3.0
+## explicit
+github.com/wapc/wapc-guest-tinygo
