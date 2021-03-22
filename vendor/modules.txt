@@ -1,9 +1,13 @@
-# github.com/buger/jsonparser v1.1.1
+# github.com/chimera-kube/gjson v1.7.1
 ## explicit
-github.com/buger/jsonparser
-# github.com/chimera-kube/policy-sdk-go v0.0.0-20210322121239-288e6abc40aa
+github.com/chimera-kube/gjson
+# github.com/chimera-kube/policy-sdk-go v0.0.1
 ## explicit
 github.com/chimera-kube/policy-sdk-go
+# github.com/tidwall/match v1.0.3
+github.com/tidwall/match
+# github.com/tidwall/pretty v1.0.2
+github.com/tidwall/pretty
 # github.com/wapc/wapc-guest-tinygo v0.3.0
 ## explicit
 github.com/wapc/wapc-guest-tinygo

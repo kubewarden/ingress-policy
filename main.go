@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/buger/jsonparser"
+	"github.com/chimera-kube/gjson"
 	chimera "github.com/chimera-kube/policy-sdk-go"
 	wapc "github.com/wapc/wapc-guest-tinygo"
 )
@@ -33,58 +33,37 @@ func slicesAreEqualOrderInsensitive(a, b []string) bool {
 
 func ingressPorts(payload []byte) []uint16 {
 	res := []uint16{}
-	jsonparser.ArrayEach(
-		payload,
-		func(rule []byte, _ jsonparser.ValueType, _ int, _ error) {
-			jsonparser.ArrayEach(
-				rule,
-				func(path []byte, _ jsonparser.ValueType, _ int, _ error) {
-					backendPort, _, _, _ := jsonparser.Get(path, "backend", "service", "port")
-					if port, err := strconv.ParseUint(string(backendPort), 10, 16); err == nil {
-						res = append(res, uint16(port))
-					}
-				},
-				"http", "paths",
-			)
-		},
-		"request", "request", "object", "spec", "rules",
-	)
+	result := gjson.Get(string(payload), "request.request.object.spec.rules.#.http.paths.#.backend.service.port")
+	for _, rule := range result.Array() {
+		for _, port := range rule.Array() {
+			port, err := strconv.ParseInt(port.String(), 10, 16)
+			if err != nil {
+				continue
+			}
+			res = append(res, uint16(port))
+		}
+	}
 	return res
 }
 
 func validate(payload []byte) ([]byte, error) {
-	settings, _, _, _ := jsonparser.Get(payload, "settings")
 	tlsHosts, rulesHosts := []string{}, []string{}
-	jsonparser.ArrayEach(
-		payload,
-		func(value []byte, _ jsonparser.ValueType, _ int, _ error) {
-			hosts := []string{}
-			jsonparser.ArrayEach(
-				value,
-				func(value []byte, _ jsonparser.ValueType, _ int, _ error) {
-					hosts = append(hosts, string(value))
-				},
-				"hosts",
-			)
-			tlsHosts = append(tlsHosts, hosts...)
-		},
-		"request", "request", "object", "spec", "tls",
-	)
-	jsonparser.ArrayEach(
-		payload,
-		func(value []byte, _ jsonparser.ValueType, _ int, _ error) {
-			host, _, _, _ := jsonparser.Get(value, "host")
-			rulesHosts = append(rulesHosts, string(host))
-		},
-		"request", "request", "object", "spec", "rules",
-	)
-	if settingsRequireTLS(settings) {
+	for _, host := range gjson.Get(string(payload), "request.request.object.spec.tls.#.hosts").Array() {
+		for _, tlsHost := range host.Array() {
+			tlsHosts = append(tlsHosts, tlsHost.String())
+		}
+	}
+	for _, host := range gjson.Get(string(payload), "request.request.object.spec.rules.#.host").Array() {
+		rulesHosts = append(rulesHosts, host.String())
+	}
+	settings := gjson.Get(string(payload), "settings")
+	if settingsRequireTLS([]byte(settings.String())) {
 		if !slicesAreEqualOrderInsensitive(tlsHosts, rulesHosts) {
 			return chimera.RejectRequest(chimera.Message("not all hosts have TLS configuration"), chimera.NoCode)
 		}
 	}
 	ingressPorts := ingressPorts(payload)
-	settingsDenyPorts := settingsDenyPorts(settings)
+	settingsDenyPorts := settingsDenyPorts([]byte(settings.String()))
 	if len(settingsDenyPorts) > 0 {
 		for _, ingressPort := range ingressPorts {
 			if _, ok := settingsDenyPorts[ingressPort]; ok {
@@ -92,7 +71,7 @@ func validate(payload []byte) ([]byte, error) {
 			}
 		}
 	}
-	settingsAllowPorts := settingsAllowPorts(settings)
+	settingsAllowPorts := settingsAllowPorts([]byte(settings.String()))
 	if len(settingsAllowPorts) > 0 {
 		for _, ingressPort := range ingressPorts {
 			if _, ok := settingsAllowPorts[ingressPort]; !ok {
@@ -104,39 +83,30 @@ func validate(payload []byte) ([]byte, error) {
 }
 
 func settingsRequireTLS(payload []byte) bool {
-	requireTLS, _, _, _ := jsonparser.Get(payload, "requireTLS")
-	requireTLSBool, err := strconv.ParseBool(string(requireTLS))
-	if err != nil {
-		return false
-	}
-	return requireTLSBool
+	return gjson.Get(string(payload), "requireTLS").Bool()
 }
 
 func settingsAllowPorts(payload []byte) map[uint16]struct{} {
 	allowPorts := map[uint16]struct{}{}
-	jsonparser.ArrayEach(
-		payload,
-		func(value []byte, _ jsonparser.ValueType, _ int, _ error) {
-			if allowPort, err := strconv.ParseUint(string(value), 10, 16); err == nil {
-				allowPorts[uint16(allowPort)] = struct{}{}
-			}
-		},
-		"allowPorts",
-	)
+	for _, port := range gjson.Get(string(payload), "allowPorts").Array() {
+		port, err := strconv.ParseUint(port.String(), 10, 16)
+		if err != nil {
+			continue
+		}
+		allowPorts[uint16(port)] = struct{}{}
+	}
 	return allowPorts
 }
 
 func settingsDenyPorts(payload []byte) map[uint16]struct{} {
 	denyPorts := map[uint16]struct{}{}
-	jsonparser.ArrayEach(
-		payload,
-		func(value []byte, _ jsonparser.ValueType, _ int, _ error) {
-			if denyPort, err := strconv.ParseUint(string(value), 10, 16); err == nil {
-				denyPorts[uint16(denyPort)] = struct{}{}
-			}
-		},
-		"denyPorts",
-	)
+	for _, port := range gjson.Get(string(payload), "denyPorts").Array() {
+		port, err := strconv.ParseUint(port.String(), 10, 16)
+		if err != nil {
+			continue
+		}
+		denyPorts[uint16(port)] = struct{}{}
+	}
 	return denyPorts
 }
 
