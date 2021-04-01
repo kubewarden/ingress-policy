@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/chimera-kube/gjson"
-	chimera "github.com/chimera-kube/policy-sdk-go"
+	"github.com/kubewarden/gjson"
+	kubewarden "github.com/kubewarden/policy-sdk-go"
 	wapc "github.com/wapc/wapc-guest-tinygo"
 )
 
@@ -59,7 +59,7 @@ func validate(payload []byte) ([]byte, error) {
 	settings := gjson.Get(string(payload), "settings")
 	if settingsRequireTLS([]byte(settings.String())) {
 		if !slicesAreEqualOrderInsensitive(tlsHosts, rulesHosts) {
-			return chimera.RejectRequest(chimera.Message("not all hosts have TLS configuration"), chimera.NoCode)
+			return kubewarden.RejectRequest(kubewarden.Message("not all hosts have TLS configuration"), kubewarden.NoCode)
 		}
 	}
 	ingressPorts := ingressPorts(payload)
@@ -67,7 +67,7 @@ func validate(payload []byte) ([]byte, error) {
 	if len(settingsDenyPorts) > 0 {
 		for _, ingressPort := range ingressPorts {
 			if _, ok := settingsDenyPorts[ingressPort]; ok {
-				return chimera.RejectRequest(chimera.Message(fmt.Sprintf("port %d is in the list of denied ports", ingressPort)), chimera.NoCode)
+				return kubewarden.RejectRequest(kubewarden.Message(fmt.Sprintf("port %d is in the list of denied ports", ingressPort)), kubewarden.NoCode)
 			}
 		}
 	}
@@ -75,11 +75,11 @@ func validate(payload []byte) ([]byte, error) {
 	if len(settingsAllowPorts) > 0 {
 		for _, ingressPort := range ingressPorts {
 			if _, ok := settingsAllowPorts[ingressPort]; !ok {
-				return chimera.RejectRequest(chimera.Message(fmt.Sprintf("port %d is not in the list of allowed ports", ingressPort)), chimera.NoCode)
+				return kubewarden.RejectRequest(kubewarden.Message(fmt.Sprintf("port %d is not in the list of allowed ports", ingressPort)), kubewarden.NoCode)
 			}
 		}
 	}
-	return chimera.AcceptRequest()
+	return kubewarden.AcceptRequest()
 }
 
 func settingsRequireTLS(payload []byte) bool {

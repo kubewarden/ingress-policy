@@ -1,4 +1,4 @@
-module github.com/chimera-kube/gjson
+module github.com/kubewarden/gjson
 
 go 1.12
 

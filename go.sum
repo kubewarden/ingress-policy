@@ -1,7 +1,7 @@
-github.com/chimera-kube/gjson v1.7.1 h1:Mnt+mXDDJU48fN+csFpctUFF1MY5d91Xl+7Ie7L3vOY=
-github.com/chimera-kube/gjson v1.7.1/go.mod h1:pDyTPwm/C511KMD9rJ/9SdPJZI+iodG1ZOeG5BwBa7Q=
-github.com/chimera-kube/policy-sdk-go v0.0.1 h1:1tUynY4ZneT49aqbR/GgtETBvUaTVeBmyOoxn1o5MfI=
-github.com/chimera-kube/policy-sdk-go v0.0.1/go.mod h1:K+ZdL42rlBK++1Az10Zu+q8fj64Xr/DDA+9Q7U2pUgw=
+github.com/kubewarden/gjson v1.7.2 h1:+cLRfPqyvjwrkgE68cGdNfUy1Z6L45DjvuFH9/ofwQ0=
+github.com/kubewarden/gjson v1.7.2/go.mod h1:jSlxpubGqBG5HHe4v8kwcc8z1JF2reJ7AJAUojw66AY=
+github.com/kubewarden/policy-sdk-go v0.0.2 h1:H39qPQvsbTXq+hgeRha8h+YgYduSZyfDPyaVIyujrtY=
+github.com/kubewarden/policy-sdk-go v0.0.2/go.mod h1:gRwvddR/wKCTvZNCzSF0NBEsCD0/WZJe4daVzvkDwAc=
 github.com/tidwall/match v1.0.3 h1:FQUVvBImDutD8wJLN6c5eMzWtjgONK9MwIBCOrUJKeE=
 github.com/tidwall/match v1.0.3/go.mod h1:eRSPERbgtNPcGhD8UCthc6PmLEQXEWd3PRB5JTxsfmM=
 github.com/tidwall/pretty v1.0.2 h1:Z7S3cePv9Jwm1KwS0513MRaoUe3S01WPbLNV40pwWZU=
