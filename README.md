@@ -1,4 +1,4 @@
-Chimera policy that allows to restrict ingress resources.
+Kubewarden policy that allows to restrict ingress resources.
 
 # What the policy allows to restrict
 
