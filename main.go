@@ -112,6 +112,7 @@ func settingsDenyPorts(payload []byte) map[uint16]struct{} {
 
 func main() {
 	wapc.RegisterFunctions(wapc.Functions{
-		"validate": validate,
+		"validate":          validate,
+		"validate_settings": validateSettings,
 	})
 }
