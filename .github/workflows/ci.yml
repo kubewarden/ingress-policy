@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - main
+    tags:
+    - 'v*'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.15'
+
+      - name: run Go unit tests
+        run: make test
+
+      - name: Setup BATS
+        uses: mig4/setup-bats@v1
+        with:
+          bats-version: 1.2.1
+
+      - name: Download policy-testdrive
+        uses: i3h/download-release-asset@v1
+        with:
+          owner: kubewarden
+          repo: policy-server
+          tag: v0.1.1
+          file: policy-testdrive-linux-amd64
+
+      - name: run e2e tests
+        run: |
+          ln -s policy-testdrive-linux-amd64 policy-testdrive
+          PATH=${PWD}:${PATH} make e2e-tests
