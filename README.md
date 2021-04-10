@@ -87,6 +87,5 @@ make e2e-tests
 
 This command requires the following binaries to be installed on your system:
 
-  * Kubewarde policy-testdrive: it can be downloaded by [this page](https://github.com/kubewarden/policy-server/releases)
+  * Kubewarden policy-testdrive: it can be downloaded by [this page](https://github.com/kubewarden/policy-server/releases)
   * [bats](https://github.com/sstephenson/bats), the Bash Automated Testing System
-
