@@ -56,3 +56,36 @@ empty), `denyPorts` is prioritized.
 }
 
 ```
+
+# Building
+
+The policy must be built using a version of [TinyGo](https://github.com/tinygo-org/tinygo)
+major than `0.17.0`.
+
+This is automatically done using this command:
+
+```shell
+make build
+```
+
+This will trigger a build using docker.
+
+# Testing
+
+The native Go tests must be run using the official Go toolkit (not TinyGo):
+
+```shell
+make test
+```
+
+The WebAssembly binary produced by the `make build` process can be tested using
+the following command:
+
+```shell
+make e2e-tests
+```
+
+This command requires the following binaries to be installed on your system:
+
+  * Kubewarden policy-testdrive: it can be downloaded by [this page](https://github.com/kubewarden/policy-server/releases)
+  * [bats](https://github.com/sstephenson/bats), the Bash Automated Testing System
