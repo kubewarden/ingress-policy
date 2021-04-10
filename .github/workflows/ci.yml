@@ -1,24 +1,19 @@
-name: CI
+name: Continuous integration
 
-on:
-  push:
-    branches:
-    - main
-    tags:
-    - 'v*'
+on: [push, pull_request]
 
 jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: setup Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: '1.15'
+      #- name: setup Go
+      #  uses: actions/setup-go@v2
+      #  with:
+      #    go-version: '1.15'
 
-      - name: run Go unit tests
-        run: make test
+      #- name: run Go unit tests
+      #  run: make test
 
       - name: Setup BATS
         uses: mig4/setup-bats@v1
@@ -33,7 +28,13 @@ jobs:
           tag: v0.1.1
           file: policy-testdrive-linux-amd64
 
+      - name: build policy
+        uses: docker://tinygo/tinygo-dev:latest
+        with:
+          args: tinygo build -o ingress-policy.wasm -target=wasi -no-debug .
+
       - name: run e2e tests
         run: |
+          chmod 755 policy-testdrive-linux-amd64
           ln -s policy-testdrive-linux-amd64 policy-testdrive
           PATH=${PWD}:${PATH} make e2e-tests
