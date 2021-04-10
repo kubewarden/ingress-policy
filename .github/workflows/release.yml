@@ -27,15 +27,23 @@ jobs:
         name: fix wasm-to-oci permissions
         run: |
           chmod 755 linux-amd64-wasm-to-oci
-      -
-        name: Install tinygo
-        run: |
-          wget https://github.com/tinygo-org/tinygo/releases/download/v0.17.0/tinygo_0.17.0_amd64.deb
-          sudo dpkg -i tinygo_0.17.0_amd64.deb
-      -
-        name: Build Wasm module
-        run: |
-          tinygo build -o ingress-policy.wasm -target=wasi -no-debug .
+
+      # TODO: uncomment once tinygo 0.18.0 is released
+      #-
+      #  name: Install tinygo
+      #  run: |
+      #    wget https://github.com/tinygo-org/tinygo/releases/download/v0.17.0/tinygo_0.17.0_amd64.deb
+      #    sudo dpkg -i tinygo_0.17.0_amd64.deb
+      #-
+      #  name: Build Wasm module
+      #  run: |
+      #    tinygo build -o ingress-policy.wasm -target=wasi -no-debug .
+
+      - name: Build Wasm module
+        uses: docker://tinygo/tinygo-dev:latest
+        with:
+          args: tinygo build -o ingress-policy.wasm -target=wasi -no-debug .
+
       -
         name: Login to GitHub Container Registry
         uses: docker/login-action@v1
