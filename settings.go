@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/deckarep/golang-set"
 	"github.com/kubewarden/gjson"
+	kubewarden "github.com/kubewarden/policy-sdk-go"
 
 	"fmt"
 )
@@ -95,7 +96,7 @@ func validateSettings(payload []byte) ([]byte, error) {
 	}
 
 	if settings.Valid() {
-		return []byte(`{"valid":true}`), nil
+		return kubewarden.AcceptSettings()
 	}
-	return []byte(`{"valid":false}`), nil
+	return kubewarden.RejectSettings(kubewarden.Message("No port can be allowed and denied at the same time"))
 }
