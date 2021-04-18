@@ -1,0 +1,14 @@
+name: ingress
+description: Enforce requirements on Ingress resources
+homepage: https://github.com/kubewarden/ingress-policy
+author:
+  name: Kubewarden devs
+  homepage: https://github.com/kubewarden
+download:
+  registry: ghcr.io/kubewarden/policies/ingress:__TAG__
+  url: https://github.com/kubewarden/ingress-policy/releases/download/__TAG__/policy.wasm
+keywords:
+  - Ingress
+resources:
+  - Ingress
+mutation: false
