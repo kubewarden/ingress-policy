@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 @test "reject because required TLS failure" {
-  run policy-testdrive -p ingress-policy.wasm -r test_data/ingress-wildcard.json -s '{"requireTLS": true}'
+  run policy-testdrive -p policy.wasm -r test_data/ingress-wildcard.json -s '{"requireTLS": true}'
 
   # this prints the output when one the checks below fails
   echo "output = ${output}"
@@ -15,7 +15,7 @@
 }
 
 @test "reject because not allowed port is used" {
-  run policy-testdrive -p ingress-policy.wasm -r test_data/ingress-wildcard.json -s '{"allowPorts": [80]}'
+  run policy-testdrive -p policy.wasm -r test_data/ingress-wildcard.json -s '{"allowPorts": [80]}'
 
   # this prints the output when one the checks below fails
   echo "output = ${output}"
@@ -29,7 +29,7 @@
 }
 
 @test "reject because not denied port is used" {
-  run policy-testdrive -p ingress-policy.wasm -r test_data/ingress-wildcard.json -s '{"denyPorts": [3000]}'
+  run policy-testdrive -p policy.wasm -r test_data/ingress-wildcard.json -s '{"denyPorts": [3000]}'
 
   # this prints the output when one the checks below fails
   echo "output = ${output}"
@@ -43,7 +43,7 @@
 }
 
 @test "reject because invalid settings" {
-  run policy-testdrive -p ingress-policy.wasm -r test_data/ingress-wildcard.json -s '{"allowPorts": [80, 3000], "denyPorts": [3000]}'
+  run policy-testdrive -p policy.wasm -r test_data/ingress-wildcard.json -s '{"allowPorts": [80, 3000], "denyPorts": [3000]}'
 
   # this prints the output when one the checks below fails
   echo "output = ${output}"
@@ -53,7 +53,7 @@
 }
 
 @test "accept" {
-  run policy-testdrive -p ingress-policy.wasm -r test_data/single-backend-with-tls-termination.json -s '{"requireTLS": true, "denyPorts": [3000]}'
+  run policy-testdrive -p policy.wasm -r test_data/single-backend-with-tls-termination.json -s '{"requireTLS": true, "denyPorts": [3000]}'
   # this prints the output when one the checks below fails
   echo "output = ${output}"
 
