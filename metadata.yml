@@ -1,10 +1,12 @@
 rules:
-- apiGroups: ["*"]
-  apiVersions: ["*"]
-  resources: ["*"]
+- apiGroups: ["networking.k8s.io"]
+  apiVersions: ["v1"]
+  resources: ["ingresses"]
   operations: ["CREATE", "UPDATE"]
 mutating: false
 annotations:
+  io.kubewarden.policy.title: ingress-policy
+  io.kubewarden.policy.description: Policy to enforce requirements on Kubernetes Ingress resources
   io.kubewarden.policy.author: Flavio Castelli, Rafael Fernández López
   io.kubewarden.policy.url: https://github.com/kubewarden/ingress-policy
   io.kubewarden.policy.source: https://github.com/kubewarden/ingress-policy
