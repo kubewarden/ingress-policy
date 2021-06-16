@@ -4,6 +4,7 @@ rules:
   resources: ["ingresses"]
   operations: ["CREATE", "UPDATE"]
 mutating: false
+contextAware: false
 annotations:
   io.kubewarden.policy.title: ingress-policy
   io.kubewarden.policy.description: Policy to enforce requirements on Kubernetes Ingress resources
