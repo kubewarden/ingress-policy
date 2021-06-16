@@ -12,3 +12,4 @@ keywords:
 resources:
   - Ingress
 mutation: false
+context-aware: false
