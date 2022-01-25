@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 @test "reject because required TLS failure" {
-  run kwctl run policy.wasm -r test_data/ingress-wildcard.json --settings-json '{"requireTLS": true}'
+  run kwctl run annotated-policy.wasm -r test_data/ingress-wildcard.json --settings-json '{"requireTLS": true}'
 
   # this prints the output when one the checks below fails
   echo "output = ${output}"
@@ -14,7 +14,7 @@
 }
 
 @test "reject because not allowed port is used" {
-  run kwctl run policy.wasm -r test_data/ingress-wildcard.json --settings-json '{"allowPorts": [80]}'
+  run kwctl run annotated-policy.wasm -r test_data/ingress-wildcard.json --settings-json '{"allowPorts": [80]}'
 
   # this prints the output when one the checks below fails
   echo "output = ${output}"
@@ -26,7 +26,7 @@
 }
 
 @test "reject because not denied port is used" {
-  run kwctl run policy.wasm -r test_data/ingress-wildcard.json --settings-json '{"denyPorts": [3000]}'
+  run kwctl run annotated-policy.wasm -r test_data/ingress-wildcard.json --settings-json '{"denyPorts": [3000]}'
 
   # this prints the output when one the checks below fails
   echo "output = ${output}"
@@ -38,7 +38,7 @@
 }
 
 @test "reject because invalid settings" {
-  run kwctl run policy.wasm -r test_data/ingress-wildcard.json --settings-json '{"allowPorts": [80, 3000], "denyPorts": [3000]}'
+  run kwctl run annotated-policy.wasm -r test_data/ingress-wildcard.json --settings-json '{"allowPorts": [80, 3000], "denyPorts": [3000]}'
 
   # this prints the output when one the checks below fails
   echo "output = ${output}"
@@ -49,7 +49,7 @@
 }
 
 @test "accept" {
-  run kwctl run policy.wasm -r test_data/single-backend-with-tls-termination.json --settings-json '{"requireTLS": true, "denyPorts": [3000]}'
+  run kwctl run annotated-policy.wasm -r test_data/single-backend-with-tls-termination.json --settings-json '{"requireTLS": true, "denyPorts": [3000]}'
   # this prints the output when one the checks below fails
   echo "output = ${output}"
 
