@@ -65,8 +65,7 @@ jobs:
       #############################
       - name: annotate policy
         run: |
-          PATH=${PWD}:${PATH} make annotate
-          mv annotated.wasm policy.wasm
+	        ./kwctl annotate -m metadata.yml -o annotated-policy.wasm policy.wasm
 
       #############################
       # Test Wasm module
@@ -83,7 +82,7 @@ jobs:
         if: github.event.workflow_run.event != 'pull_request'
         with:
           name: policy.wasm
-          path: ${{ env.WASM_BINARY_NAME }}
+          path: annotated-policy.wasm
           if-no-files-found: error
 
   push-to-oci-registry:
