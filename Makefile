@@ -1,13 +1,16 @@
-wasm: go.mod go.sum *.go
+.PHONY: policy.wasm
+policy.wasm: go.mod go.sum *.go
 	docker run --rm -v ${PWD}:/src -w /src tinygo/tinygo:0.18.0 tinygo build -o policy.wasm -target=wasi -no-debug .
 
-annotate:
-	kwctl annotate -m metadata.yml -o annotated.wasm policy.wasm
+annotated-policy.wasm: policy.wasm
+	kwctl annotate -m metadata.yml -o annotated-policy.wasm policy.wasm
 
+.PHONY: test
 test:
 	go test -v
 
-e2e-tests:
+.PHONY: e2e-tests
+e2e-tests: annotated-policy.wasm
 	bats e2e.bats
 
 .PHONY: clean
