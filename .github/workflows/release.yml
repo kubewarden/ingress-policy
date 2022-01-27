@@ -16,9 +16,9 @@ jobs:
   release:
     needs: test
     permissions:
-      # Required to push to GHCR
-      contents: read
       # Required to create GH releases
+      contents: write
+      # Required to push to GHCR
       packages: write
       # Required by cosign keyless signing
       id-token: write
