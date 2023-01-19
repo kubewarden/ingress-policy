@@ -1,25 +1,19 @@
 ---
-version: 0.1.9
+version: 0.1.12
 name: ingress-policy
 displayName: Ingress Policy
-createdAt: '2022-07-19T16:01:24+02:00'
+createdAt: '2023-01-19T14:46:21+02:00'
 description: Enforce requirements on Ingress resources
 license: Apache-2.0
 homeURL: https://github.com/kubewarden/ingress-policy
 containersImages:
 - name: policy
-  image: ghcr.io/kubewarden/policies/ingress:v0.1.9
-install: |
-  The policy can be obtained using [`kwctl`](https://github.com/kubewarden/kwctl/):
-
-  ```console
-  kwctl pull ghcr.io/kubewarden/policies/ingress:v0.1.9
-  ```
+  image: ghcr.io/kubewarden/policies/ingress:v0.1.12
 keywords:
 - ingress
 links:
 - name: policy
-  url: https://github.com/kubewarden/ingress-policy/releases/download/v0.1.9/policy.wasm
+  url: https://github.com/kubewarden/ingress-policy/releases/download/v0.1.12/policy.wasm
 - name: source
   url: https://github.com/kubewarden/ingress-policy
 provider:
@@ -30,3 +24,41 @@ annotations:
   kubewarden/resources: Ingress
   kubewarden/mutation: false
   kubewarden/contextAware: false
+  kubewarden/rules: |
+    rules:
+    - apiGroups: ["networking.k8s.io"]
+      apiVersions: ["v1"]
+      resources: ["ingresses"]
+      operations: ["CREATE", "UPDATE"]
+  kubewarden/questions-ui: |
+    questions:
+    - default: false
+      description: This policy allows you to restrict ingress resources.
+      tooltip: >-
+        Whether the spec for ingress resources has to include a TLS attribute that
+        includes all hosts defined in the .spec.rules attribute of the ingress
+        resource.
+      group: Settings
+      label: Require TLS
+      required: false
+      type: boolean
+      variable: requireTLS
+    - default: []
+      description: >-
+        A list of allowed ports inside `.spec.rules.paths.backend.service.port`. If
+        this array contains at least one port, any other port will be rejected.
+      group: Settings
+      label: Allow ports
+      required: false
+      type: array[
+      variable: allowPorts
+    - default: []
+      description: >-
+        A list of denied ports inside `.spec.rules.paths.backend.service.port`. If
+        any port matches a port on this array, the ingress resource will be
+        rejected, otherwise it will be accepted.
+      group: Settings
+      label: Deny ports
+      required: false
+      type: array[
+      variable: denyPorts
