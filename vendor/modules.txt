@@ -1,6 +1,8 @@
 # github.com/deckarep/golang-set v1.8.0
 ## explicit
 github.com/deckarep/golang-set
+# github.com/deckarep/golang-set/v2 v2.2.0
+## explicit
 # github.com/kubewarden/gjson v1.7.2
 ## explicit
 github.com/kubewarden/gjson
