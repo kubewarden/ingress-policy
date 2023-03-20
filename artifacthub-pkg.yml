@@ -24,7 +24,7 @@ links:
 install: |
   The policy can be obtained using [`kwctl`](https://github.com/kubewarden/kwctl):
   ```console
-  kwctl pull ghcr.io/kubewarden/policies/ingress:v0.1.12-8-g66745c8
+  kwctl pull ghcr.io/kubewarden/policies/ingress:v0.1.12-8-g66745c8foo
   ```
 maintainers:
 - name: Kubewarden developers
