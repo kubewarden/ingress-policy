@@ -1,5 +1,5 @@
 SOURCE_FILES := $(shell find . -type f -name '*.go')
-VERSION := $(shell git describe --tags --abbrev=0 | cut -c2-)
+VERSION := $(shell git describe | cut -c2-)
 
 policy.wasm: $(SOURCE_FILES) go.mod go.sum
 	docker run \
