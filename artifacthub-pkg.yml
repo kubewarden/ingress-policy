@@ -1,35 +1,40 @@
----
-version: 0.1.12
+# Kubewarden Artifacthub Package config
+#
+# Use this config to submit the policy to https://artifacthub.io.
+#
+# This config can be saved to its default location with:
+#   kwctl scaffold artifacthub > artifacthub-pkg.yml 
+version: 0.1.12-8-g66745c8
 name: ingress-policy
 displayName: Ingress Policy
-createdAt: '2023-01-19T14:46:21+02:00'
+createdAt: 2023-03-20T11:51:18.91714661Z
 description: Enforce requirements on Ingress resources
 license: Apache-2.0
 homeURL: https://github.com/kubewarden/ingress-policy
 containersImages:
 - name: policy
-  image: ghcr.io/kubewarden/policies/ingress:v0.1.12
+  image: ghcr.io/kubewarden/policies/ingress:v0.1.12-8-g66745c8
 keywords:
 - ingress
 links:
 - name: policy
-  url: https://github.com/kubewarden/ingress-policy/releases/download/v0.1.12/policy.wasm
+  url: https://github.com/kubewarden/ingress-policy/releases/download/v0.1.12-8-g66745c8/policy.wasm
 - name: source
   url: https://github.com/kubewarden/ingress-policy
+install: |
+  The policy can be obtained using [`kwctl`](https://github.com/kubewarden/kwctl):
+  ```console
+  kwctl pull ghcr.io/kubewarden/policies/ingress:v0.1.12-8-g66745c8foo
+  ```
+maintainers:
+- name: Kubewarden developers
+  email: cncf-kubewarden-maintainers@lists.cncf.io
 provider:
   name: kubewarden
 recommendations:
 - url: https://artifacthub.io/packages/helm/kubewarden/kubewarden-controller
 annotations:
-  kubewarden/resources: Ingress
-  kubewarden/mutation: false
-  kubewarden/contextAware: false
-  kubewarden/rules: |
-    rules:
-    - apiGroups: ["networking.k8s.io"]
-      apiVersions: ["v1"]
-      resources: ["ingresses"]
-      operations: ["CREATE", "UPDATE"]
+  kubewarden/mutation: 'false'
   kubewarden/questions-ui: |
     questions:
     - default: false
@@ -62,3 +67,14 @@ annotations:
       required: false
       type: array[
       variable: denyPorts
+  kubewarden/resources: Ingress
+  kubewarden/rules: |
+    - apiGroups:
+      - networking.k8s.io
+      apiVersions:
+      - v1
+      resources:
+      - ingresses
+      operations:
+      - CREATE
+      - UPDATE
