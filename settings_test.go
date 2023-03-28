@@ -2,22 +2,39 @@ package main
 
 import (
 	"testing"
+
+	networkingv1 "github.com/kubewarden/k8s-objects/api/networking/v1"
+	metav1 "github.com/kubewarden/k8s-objects/apimachinery/pkg/apis/meta/v1"
+	kubewarden_protocol "github.com/kubewarden/policy-sdk-go/protocol"
+	kubewarden_testing "github.com/kubewarden/policy-sdk-go/testing"
+	"github.com/mailru/easyjson"
 )
 
 func TestParsingSettingsWithAllValuesProvidedFromValidationReq(t *testing.T) {
-	request := `
-	{
-		"request": "doesn't matter here",
-		"settings": {
-			"requireTLS": true,
-			"allowPorts": [ 443 ],
-			"denyPorts": [ 80, 8080 ]
-		}
+	ingress := networkingv1.Ingress{
+		Metadata: &metav1.ObjectMeta{
+			Name:      "test",
+			Namespace: "default",
+		},
 	}
-	`
-	rawRequest := []byte(request)
 
-	settings, err := NewSettingsFromValidationReq(rawRequest)
+	rawSettings := RawSettings{
+		RequireTls: true,
+		AllowPorts: []uint64{443},
+		DenyPorts:  []uint64{80, 8080},
+	}
+
+	validationReqRaw, err := kubewarden_testing.BuildValidationRequest(ingress, rawSettings)
+	if err != nil {
+		t.Errorf("Unexpected error %+v", err)
+	}
+	validationReq := kubewarden_protocol.ValidationRequest{}
+	err = easyjson.Unmarshal(validationReqRaw, &validationReq)
+	if err != nil {
+		t.Errorf("Unexpected error %+v", err)
+	}
+
+	settings, err := NewSettingsFromValidationReq(&validationReq)
 	if err != nil {
 		t.Errorf("Unexpected error %+v", err)
 	}
@@ -39,17 +56,30 @@ func TestParsingSettingsWithAllValuesProvidedFromValidationReq(t *testing.T) {
 }
 
 func TestParsingSettingsWithSomeValuesProvided(t *testing.T) {
-	request := `
-	{
-		"request": "doesn't matter here",
-		"settings": {
-			"allowPorts": [ 443 ]
-		}
+	ingress := networkingv1.Ingress{
+		Metadata: &metav1.ObjectMeta{
+			Name:      "test",
+			Namespace: "default",
+		},
 	}
-	`
-	rawRequest := []byte(request)
 
-	settings, err := NewSettingsFromValidationReq(rawRequest)
+	rawSettings := RawSettings{
+		RequireTls: false,
+		AllowPorts: []uint64{443},
+		DenyPorts:  []uint64{},
+	}
+
+	validationReqRaw, err := kubewarden_testing.BuildValidationRequest(ingress, rawSettings)
+	if err != nil {
+		t.Errorf("Unexpected error %+v", err)
+	}
+	validationReq := kubewarden_protocol.ValidationRequest{}
+	err = easyjson.Unmarshal(validationReqRaw, &validationReq)
+	if err != nil {
+		t.Errorf("Unexpected error %+v", err)
+	}
+
+	settings, err := NewSettingsFromValidationReq(&validationReq)
 	if err != nil {
 		t.Errorf("Unexpected error %+v", err)
 	}
@@ -75,9 +105,13 @@ func TestParsingSettingsFromValidateSettingsPayload(t *testing.T) {
 		"denyPorts": [ 80, 8080 ]
 	}
 	`
-	rawRequest := []byte(request)
+	rawRequest := RawSettings{}
+	err := easyjson.Unmarshal([]byte(request), &rawRequest)
+	if err != nil {
+		t.Errorf("Unexpected error %+v", err)
+	}
 
-	settings, err := NewSettingsFromValidateSettingsPayload(rawRequest)
+	settings := NewSettingsFromRaw(&rawRequest)
 	if err != nil {
 		t.Errorf("Unexpected error %+v", err)
 	}
@@ -106,9 +140,13 @@ func TestSettingsAreValid(t *testing.T) {
 		"denyPorts": [ 80, 8080 ]
 	}
 	`
-	rawRequest := []byte(request)
+	rawRequest := RawSettings{}
+	err := easyjson.Unmarshal([]byte(request), &rawRequest)
+	if err != nil {
+		t.Errorf("Unexpected error %+v", err)
+	}
 
-	settings, err := NewSettingsFromValidateSettingsPayload(rawRequest)
+	settings := NewSettingsFromRaw(&rawRequest)
 	if err != nil {
 		t.Errorf("Unexpected error %+v", err)
 	}
@@ -126,9 +164,13 @@ func TestSettingsAreNotValid(t *testing.T) {
 		"denyPorts": [ 80, 8080 ]
 	}
 	`
-	rawRequest := []byte(request)
+	rawRequest := RawSettings{}
+	err := easyjson.Unmarshal([]byte(request), &rawRequest)
+	if err != nil {
+		t.Errorf("Unexpected error %+v", err)
+	}
 
-	settings, err := NewSettingsFromValidateSettingsPayload(rawRequest)
+	settings := NewSettingsFromRaw(&rawRequest)
 	if err != nil {
 		t.Errorf("Unexpected error %+v", err)
 	}

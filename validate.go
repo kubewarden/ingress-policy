@@ -3,19 +3,24 @@ package main
 import (
 	"fmt"
 
-	"github.com/deckarep/golang-set"
+	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/kubewarden/gjson"
 	kubewarden "github.com/kubewarden/policy-sdk-go"
+	kubewarden_protocol "github.com/kubewarden/policy-sdk-go/protocol"
+	easyjson "github.com/mailru/easyjson"
 )
 
 func validate(payload []byte) ([]byte, error) {
-	if !gjson.ValidBytes(payload) {
+	validationRequest := kubewarden_protocol.ValidationRequest{}
+	err := easyjson.Unmarshal(payload, &validationRequest)
+	if err != nil {
 		return kubewarden.RejectRequest(
-			kubewarden.Message("Not a valid JSON document"),
+			kubewarden.Message(err.Error()),
 			kubewarden.Code(400))
 	}
 
-	settings, err := NewSettingsFromValidationReq(payload)
+	// Create a Settings instance from the ValidationRequest object
+	settings, err := NewSettingsFromValidationReq(&validationRequest)
 	if err != nil {
 		return kubewarden.RejectRequest(
 			kubewarden.Message(err.Error()),
@@ -48,9 +53,10 @@ func checkTlsSettings(payload []byte, settings *Settings) bool {
 		return true
 	}
 
-	tlsHost := mapset.NewThreadUnsafeSet()
-	rulesHosts := mapset.NewThreadUnsafeSet()
+	tlsHost := mapset.NewThreadUnsafeSet[string]()
+	rulesHosts := mapset.NewThreadUnsafeSet[string]()
 
+	// still using gjson because it makes the code more compact
 	data := gjson.GetManyBytes(
 		payload,
 		"request.object.spec.tls.#.hosts|@flatten",
@@ -69,9 +75,10 @@ func checkTlsSettings(payload []byte, settings *Settings) bool {
 	return tlsHost.Equal(rulesHosts)
 }
 
-func parsePorts(payload []byte) mapset.Set {
-	ports := mapset.NewThreadUnsafeSet()
+func parsePorts(payload []byte) mapset.Set[uint64] {
+	ports := mapset.NewThreadUnsafeSet[uint64]()
 
+	// still using gjson because it makes the code more compact
 	data := gjson.GetBytes(
 		payload,
 		"request.object.spec.rules.#.http.paths.#.backend.service.port.number|@flatten")
@@ -83,7 +90,7 @@ func parsePorts(payload []byte) mapset.Set {
 	return ports
 }
 
-func checkAllowedPorts(ports mapset.Set, settings *Settings) error {
+func checkAllowedPorts(ports mapset.Set[uint64], settings *Settings) error {
 	if settings.AllowPorts.Cardinality() == 0 {
 		return nil
 	}
@@ -96,7 +103,7 @@ func checkAllowedPorts(ports mapset.Set, settings *Settings) error {
 	return fmt.Errorf("These ports are not on the allowed list: %v", notAllowed)
 }
 
-func checkDeniedPorts(ports mapset.Set, settings *Settings) error {
+func checkDeniedPorts(ports mapset.Set[uint64], settings *Settings) error {
 	if settings.DenyPorts.Cardinality() == 0 {
 		return nil
 	}
