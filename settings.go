@@ -1,85 +1,37 @@
 package main
 
 import (
-	"github.com/deckarep/golang-set"
-	"github.com/kubewarden/gjson"
+	mapset "github.com/deckarep/golang-set/v2"
 	kubewarden "github.com/kubewarden/policy-sdk-go"
-
-	"fmt"
+	kubewarden_protocol "github.com/kubewarden/policy-sdk-go/protocol"
+	easyjson "github.com/mailru/easyjson"
 )
 
 type Settings struct {
 	RequireTls bool       `json:"requireTLS"`
-	AllowPorts mapset.Set `json:"allowPorts"`
-	DenyPorts  mapset.Set `json:"denyPorts"`
+	AllowPorts mapset.Set[uint64] `json:"allowPorts"`
+	DenyPorts  mapset.Set[uint64] `json:"denyPorts"`
 }
 
-// Builds a new Settings instance starting from a validation
-// request payload:
-// {
-//    "request": ...,
-//    "settings": {
-//       requireTLS: ...
-//    }
-// }
-func NewSettingsFromValidationReq(payload []byte) (Settings, error) {
-	// Note well: we don't validate the input JSON now, this has
-	// already done inside of the `validate` function
-
-	return newSettings(
-		payload,
-		"settings.requireTLS",
-		"settings.allowPorts",
-		"settings.denyPorts")
-}
-
-// Builds a new Settings instance starting from a Settings
-// payload:
-// {
-//    "requireTLS": ...
-// }
-func NewSettingsFromValidateSettingsPayload(payload []byte) (Settings, error) {
-	if !gjson.ValidBytes(payload) {
-		return Settings{}, fmt.Errorf("invalid JSON payload")
-	}
-
-	return newSettings(
-		payload,
-		"requireTLS",
-		"allowPorts",
-		"denyPorts")
-}
-
-func newSettings(payload []byte, paths ...string) (Settings, error) {
-	if len(paths) != 3 {
-		return Settings{}, fmt.Errorf("wrong number of json paths")
-	}
-
-	data := gjson.GetManyBytes(payload, paths...)
-
-	requireTLS := false
-	if data[0].Exists() {
-		requireTLS = data[0].Bool()
-	}
-
-	allowPorts := mapset.NewThreadUnsafeSet()
-	data[1].ForEach(func(_, entry gjson.Result) bool {
-		allowPorts.Add(entry.Uint())
-		return true
-	})
-
-	denyPorts := mapset.NewThreadUnsafeSet()
-	data[2].ForEach(func(_, entry gjson.Result) bool {
-		denyPorts.Add(entry.Uint())
-		return true
-	})
+func NewSettingsFromRaw(rawSettings *RawSettings) Settings {
+	allowPorts := mapset.NewThreadUnsafeSet[uint64](rawSettings.AllowPorts...)
+	denyPorts := mapset.NewThreadUnsafeSet[uint64](rawSettings.DenyPorts...)
 
 	return Settings{
-		RequireTls: requireTLS,
+		RequireTls: rawSettings.RequireTls,
 		AllowPorts: allowPorts,
 		DenyPorts:  denyPorts,
-	}, nil
+	}
+}
 
+func NewSettingsFromValidationReq(validationReq *kubewarden_protocol.ValidationRequest) (Settings, error) {
+	rawSettings := RawSettings{}
+	err := easyjson.Unmarshal(validationReq.Settings, &rawSettings)
+	if err != nil {
+		return Settings{}, err
+	}
+
+	return NewSettingsFromRaw(&rawSettings), nil
 }
 
 // The AllowPorts and DenyPorts should not have any
@@ -90,11 +42,13 @@ func (s *Settings) Valid() bool {
 }
 
 func validateSettings(payload []byte) ([]byte, error) {
-	settings, err := NewSettingsFromValidateSettingsPayload(payload)
+	rawSettings := RawSettings{}
+	err := easyjson.Unmarshal(payload, &rawSettings)
 	if err != nil {
 		return []byte{}, err
 	}
 
+	settings := NewSettingsFromRaw(&rawSettings)
 	if settings.Valid() {
 		return kubewarden.AcceptSettings()
 	}
