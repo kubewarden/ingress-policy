@@ -37,6 +37,11 @@ test:
 e2e-tests: annotated-policy.wasm
 	bats e2e.bats
 
+.PHONY: lint
+lint:
+	go vet ./...
+	golangci-lint run
+
 .PHONY: clean
 clean:
 	go clean
