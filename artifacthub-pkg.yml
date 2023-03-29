@@ -4,27 +4,27 @@
 #
 # This config can be saved to its default location with:
 #   kwctl scaffold artifacthub > artifacthub-pkg.yml 
-version: 0.1.13-1-g29b5de9
+version: 0.1.14
 name: ingress-policy
 displayName: Ingress Policy
-createdAt: 2023-03-28T16:44:02.158649552Z
+createdAt: 2023-03-29T09:20:58.079288864Z
 description: Enforce requirements on Ingress resources
 license: Apache-2.0
 homeURL: https://github.com/kubewarden/ingress-policy
 containersImages:
 - name: policy
-  image: ghcr.io/kubewarden/policies/ingress:v0.1.13-1-g29b5de9
+  image: ghcr.io/kubewarden/policies/ingress:v0.1.14
 keywords:
 - ingress
 links:
 - name: policy
-  url: https://github.com/kubewarden/ingress-policy/releases/download/v0.1.13-1-g29b5de9/policy.wasm
+  url: https://github.com/kubewarden/ingress-policy/releases/download/v0.1.14/policy.wasm
 - name: source
   url: https://github.com/kubewarden/ingress-policy
 install: |
   The policy can be obtained using [`kwctl`](https://github.com/kubewarden/kwctl):
   ```console
-  kwctl pull ghcr.io/kubewarden/policies/ingress:v0.1.13-1-g29b5de9
+  kwctl pull ghcr.io/kubewarden/policies/ingress:v0.1.14
   ```
 maintainers:
 - name: Kubewarden developers
