@@ -6,6 +6,8 @@ github.com/kubewarden/gjson v1.7.2 h1:+cLRfPqyvjwrkgE68cGdNfUy1Z6L45DjvuFH9/ofwQ
 github.com/kubewarden/gjson v1.7.2/go.mod h1:jSlxpubGqBG5HHe4v8kwcc8z1JF2reJ7AJAUojw66AY=
 github.com/kubewarden/k8s-objects v1.24.0-kw4 h1:/XAEdK8uHUz+asM/PgUs1T4vgCN7d+tiDDb5azMOimo=
 github.com/kubewarden/k8s-objects v1.24.0-kw4/go.mod h1:0d8vhSnO2G4bwo58G9ncQYhsgBggGzgh+V0Wqc3CLe8=
+github.com/kubewarden/k8s-objects v1.24.0-kw7 h1:uXGSLyyp/qnipq7yNxFy5zebFRy8utoO+wn1fW6QkkU=
+github.com/kubewarden/k8s-objects v1.24.0-kw7/go.mod h1:IuIHLG1JtxjC1JnY7SyEEA9MukCh/FACcwpzaBjgdLQ=
 github.com/kubewarden/policy-sdk-go v0.3.0 h1:5WqhrC3eJP+gRti14d4vCyXCITeM95X4hob6QA96eX8=
 github.com/kubewarden/policy-sdk-go v0.3.0/go.mod h1:zJLxhZkoFVKOlHJ3mlbG8qTCvVbkZprZ7odVwVsunUo=
 github.com/kubewarden/strfmt v0.1.2 h1:S0YUVkPeyUMikz8QssbMzfd1MC5K8ZqxLI2zfF8euMs=
