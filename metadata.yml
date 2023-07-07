@@ -24,4 +24,4 @@ annotations:
   io.kubewarden.policy.source: https://github.com/kubewarden/ingress-policy
   io.kubewarden.policy.license: Apache-2.0
   io.kubewarden.policy.category: Ingress
-  io.kubewarden.policy.severity: medium
+  io.kubewarden.policy.severity: high
