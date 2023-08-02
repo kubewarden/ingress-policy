@@ -17,7 +17,7 @@ type NetworkPolicyList struct {
 	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
 	APIVersion string `json:"apiVersion,omitempty"`
 
-	// Items is a list of schema objects.
+	// items is a list of schema objects.
 	// Required: true
 	Items []*NetworkPolicy `json:"items"`
 

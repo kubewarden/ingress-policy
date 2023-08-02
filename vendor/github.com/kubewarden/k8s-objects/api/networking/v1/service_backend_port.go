@@ -10,9 +10,9 @@ package v1
 // swagger:model ServiceBackendPort
 type ServiceBackendPort struct {
 
-	// Name is the name of the port on the Service. This is a mutually exclusive setting with "Number".
+	// name is the name of the port on the Service. This is a mutually exclusive setting with "Number".
 	Name string `json:"name,omitempty"`
 
-	// Number is the numerical port number (e.g. 80) on the Service. This is a mutually exclusive setting with "Name".
+	// number is the numerical port number (e.g. 80) on the Service. This is a mutually exclusive setting with "Name".
 	Number int32 `json:"number,omitempty"`
 }
