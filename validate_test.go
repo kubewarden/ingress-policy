@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	mapset "github.com/deckarep/golang-set/v2"
+
 	kubewarden_protocol "github.com/kubewarden/policy-sdk-go/protocol"
 	kubewarden_testing "github.com/kubewarden/policy-sdk-go/testing"
 )
@@ -84,7 +85,7 @@ func TestCheckDeniedPortsSomeDeniedPortsAreUsed(t *testing.T) {
 func TestParsePorts(t *testing.T) {
 	payload, err := kubewarden_testing.BuildValidationRequestFromFixture(
 		"test_data/ingress-wildcard.json",
-		&RawSettings{})
+		&Settings{})
 	if err != nil {
 		t.Errorf("Unexpected error: %+v", err)
 	}
@@ -97,14 +98,13 @@ func TestParsePorts(t *testing.T) {
 }
 
 func TestCheckTlsSettingsNotEnforced(t *testing.T) {
-	rawSettings := RawSettings{
+	settings := Settings{
 		RequireTls: false,
 	}
-	settings := NewSettingsFromRaw(&rawSettings)
 
 	payload, err := kubewarden_testing.BuildValidationRequestFromFixture(
 		"test_data/ingress-wildcard.json",
-		&rawSettings)
+		&settings)
 	if err != nil {
 		t.Errorf("Unexpected error: %+v", err)
 	}
@@ -115,14 +115,13 @@ func TestCheckTlsSettingsNotEnforced(t *testing.T) {
 }
 
 func TestCheckTlsSettingsEnforcedAndTlsNotConfigured(t *testing.T) {
-	rawSettings := RawSettings{
+	settings := Settings{
 		RequireTls: true,
 	}
-	settings := NewSettingsFromRaw(&rawSettings)
 
 	payload, err := kubewarden_testing.BuildValidationRequestFromFixture(
 		"test_data/ingress-wildcard.json",
-		&rawSettings)
+		&settings)
 	if err != nil {
 		t.Errorf("Unexpected error: %+v", err)
 	}
@@ -133,14 +132,13 @@ func TestCheckTlsSettingsEnforcedAndTlsNotConfigured(t *testing.T) {
 }
 
 func TestCheckTlsSettingsEnforcedAndTlsConfigured(t *testing.T) {
-	rawSettings := RawSettings{
+	settings := Settings{
 		RequireTls: true,
 	}
-	settings := NewSettingsFromRaw(&rawSettings)
 
 	payload, err := kubewarden_testing.BuildValidationRequestFromFixture(
 		"test_data/single-backend-with-tls-termination.json",
-		&rawSettings)
+		&settings)
 	if err != nil {
 		t.Errorf("Unexpected error: %+v", err)
 	}
@@ -151,14 +149,13 @@ func TestCheckTlsSettingsEnforcedAndTlsConfigured(t *testing.T) {
 }
 
 func TestCheckTlsSettingsEnforcedAndPartialTlsConfiguration(t *testing.T) {
-	rawSettings := RawSettings{
+	settings := Settings{
 		RequireTls: true,
 	}
-	settings := NewSettingsFromRaw(&rawSettings)
 
 	payload, err := kubewarden_testing.BuildValidationRequestFromFixture(
 		"test_data/multiple-backends-with-partial-tls-termination.json",
-		&rawSettings)
+		&settings)
 	if err != nil {
 		t.Errorf("Unexpected error: %+v", err)
 	}
@@ -185,20 +182,20 @@ func TestValidationRejectionDueToInvalidJSON(t *testing.T) {
 		t.Error("Unexpected approval")
 	}
 
-	expected_message := "parse error: syntax error near offset 0 of 'boom baby!'"
-	if *response.Message != expected_message {
-		t.Errorf("Got '%s' instead of '%s'", *response.Message, expected_message)
+	expectedMessage := "invalid character 'b' looking for beginning of value"
+	if *response.Message != expectedMessage {
+		t.Errorf("Got '%s' instead of '%s'", *response.Message, expectedMessage)
 	}
 }
 
 func TestValidationTlsRejection(t *testing.T) {
-	rawSettings := RawSettings{
+	settings := Settings{
 		RequireTls: true,
 	}
 
 	payload, err := kubewarden_testing.BuildValidationRequestFromFixture(
 		"test_data/multiple-backends-with-partial-tls-termination.json",
-		&rawSettings)
+		&settings)
 	if err != nil {
 		t.Errorf("Unexpected error: %+v", err)
 	}
@@ -217,22 +214,22 @@ func TestValidationTlsRejection(t *testing.T) {
 		t.Error("Unexpected approval")
 	}
 
-	expected_message := "Not all hosts have TLS enabled"
-	if *response.Message != expected_message {
-		t.Errorf("Got '%s' instead of '%s'", *response.Message, expected_message)
+	expectedMessage := "Not all hosts have TLS enabled"
+	if *response.Message != expectedMessage {
+		t.Errorf("Got '%s' instead of '%s'", *response.Message, expectedMessage)
 	}
 }
 
 func TestValidationAllowedPortsRejection(t *testing.T) {
-	rawSettings := RawSettings{
+	settings := Settings{
 		RequireTls: false,
-		AllowPorts: []uint64{5000},
-		DenyPorts:  []uint64{},
+		AllowPorts: mapset.NewThreadUnsafeSet[uint64](5000),
+		DenyPorts:  mapset.NewThreadUnsafeSet[uint64](),
 	}
 
 	payload, err := kubewarden_testing.BuildValidationRequestFromFixture(
 		"test_data/multiple-backends-with-partial-tls-termination.json",
-		&rawSettings)
+		&settings)
 	if err != nil {
 		t.Errorf("Unexpected error: %+v", err)
 	}
@@ -251,22 +248,22 @@ func TestValidationAllowedPortsRejection(t *testing.T) {
 		t.Error("Unexpected approval")
 	}
 
-	expected_message := "These ports are not on the allowed list: Set{80}"
-	if *response.Message != expected_message {
-		t.Errorf("Got '%s' instead of '%s'", *response.Message, expected_message)
+	expectedMessage := "These ports are not on the allowed list: Set{80}"
+	if *response.Message != expectedMessage {
+		t.Errorf("Got '%s' instead of '%s'", *response.Message, expectedMessage)
 	}
 }
 
 func TestValidationDeniedPortsRejection(t *testing.T) {
-	rawSettings := RawSettings{
+	settings := Settings{
 		RequireTls: false,
-		AllowPorts: []uint64{},
-		DenyPorts:  []uint64{80},
+		AllowPorts: mapset.NewThreadUnsafeSet[uint64](),
+		DenyPorts:  mapset.NewThreadUnsafeSet[uint64](80),
 	}
 
 	payload, err := kubewarden_testing.BuildValidationRequestFromFixture(
 		"test_data/multiple-backends-with-partial-tls-termination.json",
-		&rawSettings)
+		&settings)
 	if err != nil {
 		t.Errorf("Unexpected error: %+v", err)
 	}
@@ -285,22 +282,22 @@ func TestValidationDeniedPortsRejection(t *testing.T) {
 		t.Error("Unexpected approval")
 	}
 
-	expected_message := "These ports are explicitly denied: Set{80}"
-	if *response.Message != expected_message {
-		t.Errorf("Got '%s' instead of '%s'", *response.Message, expected_message)
+	expectedMessage := "These ports are explicitly denied: Set{80}"
+	if *response.Message != expectedMessage {
+		t.Errorf("Got '%s' instead of '%s'", *response.Message, expectedMessage)
 	}
 }
 
 func TestValidationAccept(t *testing.T) {
-	rawSettings := RawSettings{
+	settings := Settings{
 		RequireTls: true,
-		AllowPorts: []uint64{},
-		DenyPorts:  []uint64{8080},
+		AllowPorts: mapset.NewThreadUnsafeSet[uint64](),
+		DenyPorts:  mapset.NewThreadUnsafeSet[uint64](8080),
 	}
 
 	payload, err := kubewarden_testing.BuildValidationRequestFromFixture(
 		"test_data/single-backend-with-tls-termination.json",
-		&rawSettings)
+		&settings)
 	if err != nil {
 		t.Errorf("Unexpected error: %+v", err)
 	}

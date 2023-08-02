@@ -1,13 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"testing"
 
+	mapset "github.com/deckarep/golang-set/v2"
 	networkingv1 "github.com/kubewarden/k8s-objects/api/networking/v1"
 	metav1 "github.com/kubewarden/k8s-objects/apimachinery/pkg/apis/meta/v1"
 	kubewarden_protocol "github.com/kubewarden/policy-sdk-go/protocol"
 	kubewarden_testing "github.com/kubewarden/policy-sdk-go/testing"
-	"github.com/mailru/easyjson"
 )
 
 func TestParsingSettingsWithAllValuesProvidedFromValidationReq(t *testing.T) {
@@ -18,18 +19,18 @@ func TestParsingSettingsWithAllValuesProvidedFromValidationReq(t *testing.T) {
 		},
 	}
 
-	rawSettings := RawSettings{
+	expectedSettings := Settings{
 		RequireTls: true,
-		AllowPorts: []uint64{443},
-		DenyPorts:  []uint64{80, 8080},
+		AllowPorts: mapset.NewThreadUnsafeSet[uint64](443),
+		DenyPorts:  mapset.NewThreadUnsafeSet[uint64](80, 8080),
 	}
 
-	validationReqRaw, err := kubewarden_testing.BuildValidationRequest(ingress, rawSettings)
+	validationReqRaw, err := kubewarden_testing.BuildValidationRequest(ingress, &expectedSettings)
 	if err != nil {
 		t.Errorf("Unexpected error %+v", err)
 	}
 	validationReq := kubewarden_protocol.ValidationRequest{}
-	err = easyjson.Unmarshal(validationReqRaw, &validationReq)
+	err = json.Unmarshal(validationReqRaw, &validationReq)
 	if err != nil {
 		t.Errorf("Unexpected error %+v", err)
 	}
@@ -63,18 +64,18 @@ func TestParsingSettingsWithSomeValuesProvided(t *testing.T) {
 		},
 	}
 
-	rawSettings := RawSettings{
+	expectedSettings := Settings{
 		RequireTls: false,
-		AllowPorts: []uint64{443},
-		DenyPorts:  []uint64{},
+		AllowPorts: mapset.NewThreadUnsafeSet[uint64](443),
+		DenyPorts:  mapset.NewThreadUnsafeSet[uint64](),
 	}
 
-	validationReqRaw, err := kubewarden_testing.BuildValidationRequest(ingress, rawSettings)
+	validationReqRaw, err := kubewarden_testing.BuildValidationRequest(ingress, expectedSettings)
 	if err != nil {
 		t.Errorf("Unexpected error %+v", err)
 	}
 	validationReq := kubewarden_protocol.ValidationRequest{}
-	err = easyjson.Unmarshal(validationReqRaw, &validationReq)
+	err = json.Unmarshal(validationReqRaw, &validationReq)
 	if err != nil {
 		t.Errorf("Unexpected error %+v", err)
 	}
@@ -105,13 +106,8 @@ func TestParsingSettingsFromValidateSettingsPayload(t *testing.T) {
 		"denyPorts": [ 80, 8080 ]
 	}
 	`
-	rawRequest := RawSettings{}
-	err := easyjson.Unmarshal([]byte(request), &rawRequest)
-	if err != nil {
-		t.Errorf("Unexpected error %+v", err)
-	}
-
-	settings := NewSettingsFromRaw(&rawRequest)
+	settings := Settings{}
+	err := json.Unmarshal([]byte(request), &settings)
 	if err != nil {
 		t.Errorf("Unexpected error %+v", err)
 	}
@@ -140,13 +136,8 @@ func TestSettingsAreValid(t *testing.T) {
 		"denyPorts": [ 80, 8080 ]
 	}
 	`
-	rawRequest := RawSettings{}
-	err := easyjson.Unmarshal([]byte(request), &rawRequest)
-	if err != nil {
-		t.Errorf("Unexpected error %+v", err)
-	}
-
-	settings := NewSettingsFromRaw(&rawRequest)
+	settings := Settings{}
+	err := json.Unmarshal([]byte(request), &settings)
 	if err != nil {
 		t.Errorf("Unexpected error %+v", err)
 	}
@@ -164,13 +155,8 @@ func TestSettingsAreNotValid(t *testing.T) {
 		"denyPorts": [ 80, 8080 ]
 	}
 	`
-	rawRequest := RawSettings{}
-	err := easyjson.Unmarshal([]byte(request), &rawRequest)
-	if err != nil {
-		t.Errorf("Unexpected error %+v", err)
-	}
-
-	settings := NewSettingsFromRaw(&rawRequest)
+	settings := Settings{}
+	err := json.Unmarshal([]byte(request), &settings)
 	if err != nil {
 		t.Errorf("Unexpected error %+v", err)
 	}
