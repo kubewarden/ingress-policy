@@ -10,7 +10,7 @@ package v1
 // swagger:model HTTPIngressRuleValue
 type HTTPIngressRuleValue struct {
 
-	// A collection of paths that map requests to backends.
+	// paths is a collection of paths that map requests to backends.
 	// Required: true
 	Paths []*HTTPIngressPath `json:"paths"`
 }

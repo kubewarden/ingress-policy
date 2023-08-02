@@ -14,9 +14,9 @@ import (
 // swagger:model IngressBackend
 type IngressBackend struct {
 
-	// Resource is an ObjectRef to another Kubernetes resource in the namespace of the Ingress object. If resource is specified, a service.Name and service.Port must not be specified. This is a mutually exclusive setting with "Service".
+	// resource is an ObjectRef to another Kubernetes resource in the namespace of the Ingress object. If resource is specified, a service.Name and service.Port must not be specified. This is a mutually exclusive setting with "Service".
 	Resource *api_core_v1.TypedLocalObjectReference `json:"resource,omitempty"`
 
-	// Service references a Service as a Backend. This is a mutually exclusive setting with "Resource".
+	// service references a service as a backend. This is a mutually exclusive setting with "Resource".
 	Service *IngressServiceBackend `json:"service,omitempty"`
 }

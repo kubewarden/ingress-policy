@@ -17,7 +17,7 @@ type IngressList struct {
 	// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
 	APIVersion string `json:"apiVersion,omitempty"`
 
-	// Items is the list of Ingress.
+	// items is the list of Ingress.
 	// Required: true
 	Items []*Ingress `json:"items"`
 

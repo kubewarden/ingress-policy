@@ -14,16 +14,16 @@ import (
 // swagger:model NetworkPolicyPeer
 type NetworkPolicyPeer struct {
 
-	// IPBlock defines policy on a particular IPBlock. If this field is set then neither of the other fields can be.
+	// ipBlock defines policy on a particular IPBlock. If this field is set then neither of the other fields can be.
 	IPBlock *IPBlock `json:"ipBlock,omitempty"`
 
-	// Selects Namespaces using cluster-scoped labels. This field follows standard label selector semantics; if present but empty, it selects all namespaces.
+	// namespaceSelector selects namespaces using cluster-scoped labels. This field follows standard label selector semantics; if present but empty, it selects all namespaces.
 	//
-	// If PodSelector is also set, then the NetworkPolicyPeer as a whole selects the Pods matching PodSelector in the Namespaces selected by NamespaceSelector. Otherwise it selects all Pods in the Namespaces selected by NamespaceSelector.
+	// If podSelector is also set, then the NetworkPolicyPeer as a whole selects the pods matching podSelector in the namespaces selected by namespaceSelector. Otherwise it selects all pods in the namespaces selected by namespaceSelector.
 	NamespaceSelector *apimachinery_pkg_apis_meta_v1.LabelSelector `json:"namespaceSelector,omitempty"`
 
-	// This is a label selector which selects Pods. This field follows standard label selector semantics; if present but empty, it selects all pods.
+	// podSelector is a label selector which selects pods. This field follows standard label selector semantics; if present but empty, it selects all pods.
 	//
-	// If NamespaceSelector is also set, then the NetworkPolicyPeer as a whole selects the Pods matching PodSelector in the Namespaces selected by NamespaceSelector. Otherwise it selects the Pods matching PodSelector in the policy's own Namespace.
+	// If namespaceSelector is also set, then the NetworkPolicyPeer as a whole selects the pods matching podSelector in the Namespaces selected by NamespaceSelector. Otherwise it selects the pods matching podSelector in the policy's own namespace.
 	PodSelector *apimachinery_pkg_apis_meta_v1.LabelSelector `json:"podSelector,omitempty"`
 }

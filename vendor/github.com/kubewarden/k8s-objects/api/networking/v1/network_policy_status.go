@@ -9,11 +9,11 @@ import (
 	apimachinery_pkg_apis_meta_v1 "github.com/kubewarden/k8s-objects/apimachinery/pkg/apis/meta/v1"
 )
 
-// NetworkPolicyStatus NetworkPolicyStatus describe the current state of the NetworkPolicy.
+// NetworkPolicyStatus NetworkPolicyStatus describes the current state of the NetworkPolicy.
 //
 // swagger:model NetworkPolicyStatus
 type NetworkPolicyStatus struct {
 
-	// Conditions holds an array of metav1.Condition that describe the state of the NetworkPolicy. Current service state
+	// conditions holds an array of metav1.Condition that describe the state of the NetworkPolicy. Current service state
 	Conditions []*apimachinery_pkg_apis_meta_v1.Condition `json:"conditions,omitempty"`
 }

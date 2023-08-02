@@ -10,10 +10,10 @@ package v1
 // swagger:model IngressServiceBackend
 type IngressServiceBackend struct {
 
-	// Name is the referenced service. The service must exist in the same namespace as the Ingress object.
+	// name is the referenced service. The service must exist in the same namespace as the Ingress object.
 	// Required: true
 	Name *string `json:"name"`
 
-	// Port of the referenced service. A port name or port number is required for a IngressServiceBackend.
+	// port of the referenced service. A port name or port number is required for a IngressServiceBackend.
 	Port *ServiceBackendPort `json:"port,omitempty"`
 }
