@@ -7,7 +7,7 @@
 version: 0.1.16
 name: ingress-policy
 displayName: Ingress Policy
-createdAt: 2023-08-02T07:58:03.375902956Z
+createdAt: 2023-10-16T07:49:55.98522702Z
 description: Enforce requirements on Ingress resources
 license: Apache-2.0
 homeURL: https://github.com/kubewarden/ingress-policy
@@ -25,6 +25,10 @@ install: |
   The policy can be obtained using [`kwctl`](https://github.com/kubewarden/kwctl):
   ```console
   kwctl pull ghcr.io/kubewarden/policies/ingress:v0.1.16
+  ```
+  Then, generate the policy manifest and tune it to your liking. For example:
+  ```console
+  kwctl scaffold manifest -t ClusterAdmissionPolicy registry://ghcr.io/kubewarden/policies/ingress:v0.1.16
   ```
 maintainers:
 - name: Kubewarden developers
