@@ -5,6 +5,24 @@
     "kind": "Ingress",
     "version": "v1"
   },
+  "resource": {
+    "group": "networking.k8s.io",
+    "version": "v1",
+    "resource": "ingresses"
+  },
+  "operation": "CREATE",
+  "requestKind": {
+    "group": "networking.k8s.io",
+    "version": "v1",
+    "kind": "Ingress"
+  },
+  "userInfo": {
+    "username": "alice",
+    "uid": "alice-uid",
+    "groups": [
+      "system:authenticated"
+    ]
+  },
   "object": {
     "apiVersion": "networking.k8s.io/v1",
     "kind": "Ingress",
