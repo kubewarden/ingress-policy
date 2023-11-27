@@ -3,7 +3,7 @@ module github.com/kubewarden/ingress-policy
 go 1.20
 
 require (
-	github.com/deckarep/golang-set/v2 v2.3.1
+	github.com/deckarep/golang-set/v2 v2.4.0
 	github.com/kubewarden/gjson v1.7.2
 	github.com/kubewarden/k8s-objects v1.27.0-kw4
 	github.com/kubewarden/policy-sdk-go v0.5.1
