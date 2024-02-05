@@ -25,7 +25,4 @@ type NetworkPolicy struct {
 
 	// spec represents the specification of the desired behavior for this NetworkPolicy.
 	Spec *NetworkPolicySpec `json:"spec,omitempty"`
-
-	// status represents the current state of the NetworkPolicy. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-	Status *NetworkPolicyStatus `json:"status,omitempty"`
 }
