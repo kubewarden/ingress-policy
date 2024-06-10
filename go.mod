@@ -1,14 +1,14 @@
 module github.com/kubewarden/ingress-policy
 
-go 1.21
+go 1.22
 
-toolchain go1.22.3
+toolchain go1.22.4
 
 require (
 	github.com/deckarep/golang-set/v2 v2.6.0
 	github.com/kubewarden/gjson v1.7.2
 	github.com/kubewarden/k8s-objects v1.29.0-kw1
-	github.com/kubewarden/policy-sdk-go v0.8.0
+	github.com/kubewarden/policy-sdk-go v0.9.0
 	github.com/wapc/wapc-guest-tinygo v0.3.3
 )
 
