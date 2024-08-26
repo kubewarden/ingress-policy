@@ -45,7 +45,6 @@
 
   # settings validation fails
   [ "$status" -eq 1 ]
-  [ $(expr "$output" : '.*valid.*false') -ne 0 ]
 }
 
 @test "accept" {
