@@ -100,7 +100,7 @@ func checkAllowedPorts(ports mapset.Set[uint64], settings *Settings) error {
 		return nil
 	}
 
-	return fmt.Errorf("These ports are not on the allowed list: %v", notAllowed)
+	return fmt.Errorf("these ports are not on the allowed list: %v", notAllowed)
 }
 
 func checkDeniedPorts(ports mapset.Set[uint64], settings *Settings) error {
@@ -113,5 +113,5 @@ func checkDeniedPorts(ports mapset.Set[uint64], settings *Settings) error {
 		return nil
 	}
 
-	return fmt.Errorf("These ports are explicitly denied: %v", denied)
+	return fmt.Errorf("these ports are explicitly denied: %v", denied)
 }
