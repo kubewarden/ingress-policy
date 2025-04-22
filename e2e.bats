@@ -22,7 +22,7 @@
   # request rejected
   [ "$status" -eq 0 ]
   [ $(expr "$output" : '.*allowed.*false') -ne 0 ]
-  [ $(expr "$output" : '.*These ports are not on the allowed list: Set{3000}.*') -ne 0 ]
+  [ $(expr "$output" : '.*these ports are not on the allowed list: Set{3000}.*') -ne 0 ]
 }
 
 @test "reject because not denied port is used" {
@@ -34,7 +34,7 @@
   # request rejected
   [ "$status" -eq 0 ]
   [ $(expr "$output" : '.*allowed.*false') -ne 0 ]
-  [ $(expr "$output" : '.*These ports are explicitly denied: Set{3000}.*') -ne 0 ]
+  [ $(expr "$output" : '.*these ports are explicitly denied: Set{3000}.*') -ne 0 ]
 }
 
 @test "reject because invalid settings" {

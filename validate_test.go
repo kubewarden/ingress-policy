@@ -248,7 +248,7 @@ func TestValidationAllowedPortsRejection(t *testing.T) {
 		t.Error("Unexpected approval")
 	}
 
-	expectedMessage := "These ports are not on the allowed list: Set{80}"
+	expectedMessage := "these ports are not on the allowed list: Set{80}"
 	if *response.Message != expectedMessage {
 		t.Errorf("Got '%s' instead of '%s'", *response.Message, expectedMessage)
 	}
@@ -282,7 +282,7 @@ func TestValidationDeniedPortsRejection(t *testing.T) {
 		t.Error("Unexpected approval")
 	}
 
-	expectedMessage := "These ports are explicitly denied: Set{80}"
+	expectedMessage := "these ports are explicitly denied: Set{80}"
 	if *response.Message != expectedMessage {
 		t.Errorf("Got '%s' instead of '%s'", *response.Message, expectedMessage)
 	}
