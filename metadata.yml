@@ -18,7 +18,7 @@ annotations:
   # kubewarden specific
   io.kubewarden.policy.ociUrl: ghcr.io/kubewarden/policies/ingress
   io.kubewarden.policy.title: ingress-policy
-  io.kubewarden.policy.version: 1.0.4
+  io.kubewarden.policy.version: 1.0.5
   io.kubewarden.policy.description: Enforce requirements on Ingress resources
   io.kubewarden.policy.author: Kubewarden developers <cncf-kubewarden-maintainers@lists.cncf.io>
   io.kubewarden.policy.url: https://github.com/kubewarden/ingress-policy
