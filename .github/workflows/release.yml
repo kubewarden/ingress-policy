@@ -11,7 +11,7 @@ name: Release policy
 jobs:
   test:
     name: run tests and linters
-    uses: kubewarden/github-actions/.github/workflows/reusable-test-policy-go.yml@acb006fafe5e4da789055f573d11cea2917de59a # v4.5.8
+    uses: kubewarden/github-actions/.github/workflows/reusable-test-policy-go.yml@0c3d96f5251f687de1bbe1cd29e86b8a47bd17a6 # v4.5.9
 
   release:
     needs: test
@@ -22,13 +22,13 @@ jobs:
       packages: write
       # Required by cosign keyless signing
       id-token: write
-    uses: kubewarden/github-actions/.github/workflows/reusable-release-policy-go.yml@acb006fafe5e4da789055f573d11cea2917de59a # v4.5.8
+    uses: kubewarden/github-actions/.github/workflows/reusable-release-policy-go.yml@0c3d96f5251f687de1bbe1cd29e86b8a47bd17a6 # v4.5.9
     with:
       oci-target: ghcr.io/${{ github.repository_owner }}/policies/ingress
 
   release-catalog:
     needs: release
-    uses: kubewarden/github-actions/.github/workflows/reusable-release-policy-catalog.yml@acb006fafe5e4da789055f573d11cea2917de59a # v4.5.8
+    uses: kubewarden/github-actions/.github/workflows/reusable-release-policy-catalog.yml@0c3d96f5251f687de1bbe1cd29e86b8a47bd17a6 # v4.5.9
     secrets:
       # Required to dispatch the release event to the policy-catalog repository
       APP_ID: ${{ secrets.APP_ID }}
